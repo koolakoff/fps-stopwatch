@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(FpsTimer VERSION 0.1.0 LANGUAGES CXX RC)
+project(FpsTimer VERSION 1.0.0 LANGUAGES CXX RC)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 add_executable(fps-timer WIN32 src/main.cpp src/app.rc)
 target_compile_features(fps-timer PRIVATE cxx_std_17)

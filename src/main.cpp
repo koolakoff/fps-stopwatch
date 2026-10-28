@@ -199,7 +199,7 @@ class App {
         c->DrawTextLayout(D2D1::Point2F(w - margin - textWidth(interval), h - 132 * unit), interval, ink.Get());
         auto* caption = render.label(L"frame interval", 18 * unit);
         c->DrawTextLayout(D2D1::Point2F(w - margin - textWidth(caption), h - 78 * unit), caption, muted.Get());
-        text(L"Space / Click \u2014 start / pause    R \u2014 reset    \u2191\u2193 \u2014 refresh rate    M \u2014 max    D \u2014 default    I \u2014 theme    Esc / Q \u2014 exit",
+        text(L"v1.0    Space / Click \u2014 start / pause    R \u2014 reset    \u2191\u2193 \u2014 refresh rate    M \u2014 max    D \u2014 default    I \u2014 theme    Esc / Q \u2014 exit",
             15 * unit, margin, h - 43 * unit, muted.Get());
         text(watch.running() ? L"RUNNING" : (watch.milliseconds(ticks()) ? L"PAUSED" : L"READY"),
             13 * unit, left, h - 91 * unit, muted.Get());
