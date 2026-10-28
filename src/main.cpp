@@ -43,7 +43,7 @@ class App {
     ComPtr<IDWriteTextLayout> colon;
     ComPtr<ID2D1PathGeometry> resetIcon;
     float smallAdvance = 0, largeAdvance = 0, colonWidth = 0, smallBaseline = 0, largeBaseline = 0;
-    float timerSize = 0, timerLeft = 0, timerRight = 0;
+    float stopwatchSize = 0, stopwatchLeft = 0, stopwatchRight = 0;
     size_t minuteDigits = 0;
     std::exception_ptr deferredError;
 
@@ -85,12 +85,12 @@ class App {
         smallBaseline = baseline(digitsSmall[0].Get()); largeBaseline = baseline(digitsLarge[0].Get());
     }
     void prepareDigits(float left, float right, float height, size_t minutes) {
-        if (minuteDigits == minutes && timerLeft == left && timerRight == right) return;
-        minuteDigits = minutes; timerLeft = left; timerRight = right;
+        if (minuteDigits == minutes && stopwatchLeft == left && stopwatchRight == right) return;
+        minuteDigits = minutes; stopwatchLeft = left; stopwatchRight = right;
         makeDigits(100);
         const float measured = float(minutes + 2) * smallAdvance + 3 * largeAdvance + 2 * colonWidth;
-        timerSize = std::min((right - left) * 100 / measured, height * 0.36f);
-        makeDigits(timerSize);
+        stopwatchSize = std::min((right - left) * 100 / measured, height * 0.36f);
+        makeDigits(stopwatchSize);
     }
     void draw(const wchar_t* capture = nullptr) {
         const float w = float(render.width), h = float(render.height);
@@ -137,7 +137,7 @@ class App {
         prepareDigits(left, right, h, minutes);
         const float total = float(minutes + 2) * smallAdvance + 3 * largeAdvance + 2 * colonWidth;
         float x = left + (right - left - total) / 2;
-        const float base = h * 0.54f + timerSize * 0.28f;
+        const float base = h * 0.54f + stopwatchSize * 0.28f;
         int separators = 0;
         for (wchar_t ch : time) {
             if (ch == L':') {
@@ -276,11 +276,11 @@ public:
     ~App() { if (window && IsWindow(window)) DestroyWindow(window); }
     int run(HINSTANCE instance) {
         WNDCLASSEXW cls{}; cls.cbSize = sizeof(cls); cls.hInstance = instance;
-        cls.lpfnWndProc = procedure; cls.lpszClassName = L"FpsTimerWindow";
+        cls.lpfnWndProc = procedure; cls.lpszClassName = L"FpsStopwatchWindow";
         cls.hCursor = LoadCursorW(nullptr, IDC_ARROW);
         if (!RegisterClassExW(&cls)) throw std::runtime_error("Cannot register the application window.");
         const auto rect = display.monitor.rcMonitor;
-        window = CreateWindowExW(WS_EX_APPWINDOW, cls.lpszClassName, L"FPS Timer", WS_POPUP,
+        window = CreateWindowExW(WS_EX_APPWINDOW, cls.lpszClassName, L"FPS Stopwatch", WS_POPUP,
             rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, nullptr, nullptr, instance, this);
         if (!window) throw std::runtime_error("Cannot create the application window.");
         render.create(window, display.adapter.Get()); palette();
@@ -405,7 +405,7 @@ public:
             }
             draw(capture); ++frames;
         }
-        if (!display.restore()) MessageBoxW(nullptr, L"Could not restore the initial display mode. Please check Windows Display settings.", L"FPS Timer", MB_OK | MB_ICONWARNING);
+        if (!display.restore()) MessageBoxW(nullptr, L"Could not restore the initial display mode. Please check Windows Display settings.", L"FPS Stopwatch", MB_OK | MB_ICONWARNING);
         return 0;
     }
 };
@@ -413,10 +413,10 @@ public:
 int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR commandLine, int) {
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     const bool smoke = wcsstr(commandLine, L"--smoke-test") != nullptr;
-    HANDLE singleton = CreateMutexW(nullptr, FALSE, L"Local\\FpsTimer.SingleInstance");
+    HANDLE singleton = CreateMutexW(nullptr, FALSE, L"Local\\FpsStopwatch.SingleInstance");
     if (!singleton) return 1;
     if (GetLastError() == ERROR_ALREADY_EXISTS) {
-        if (HWND existing = FindWindowW(L"FpsTimerWindow", nullptr)) SetForegroundWindow(existing);
+        if (HWND existing = FindWindowW(L"FpsStopwatchWindow", nullptr)) SetForegroundWindow(existing);
         CloseHandle(singleton); return smoke ? 2 : 0;
     }
     const HRESULT com = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
@@ -424,7 +424,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR commandLine, int) {
     try { App app(smoke, wcsstr(commandLine, L"--test-refresh") != nullptr); result = app.run(instance); }
     catch (const std::exception& error) {
         if (smoke) { std::ofstream report("build/smoke-test.txt", std::ios::app); report << "FAIL: " << error.what() << '\n'; }
-        else MessageBoxA(nullptr, error.what(), "FPS Timer", MB_OK | MB_ICONERROR);
+        else MessageBoxA(nullptr, error.what(), "FPS Stopwatch", MB_OK | MB_ICONERROR);
     }
     if (SUCCEEDED(com)) CoUninitialize();
     CloseHandle(singleton); return result;

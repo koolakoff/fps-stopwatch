@@ -1,4 +1,4 @@
-# FPS Timer
+# FPS Stopwatch
 
 Licensed under the [MIT License](LICENSE).
 
@@ -8,9 +8,9 @@ Developed with the assistance of **OpenAI ChatGPT Codex**.
 
 **A display-synchronized stopwatch for careful FPV video-latency measurements.**
 
-FPS Timer makes the most of your monitor's available refresh rates: it displays large, stable millisecond readings and lets you switch to the highest supported rate at the current resolution. Its timing and rendering are designed for comparing the original screen with the image delivered through an FPV video system.
+FPS Stopwatch makes the most of your monitor's available refresh rates: it displays large, stable millisecond readings and lets you switch to the highest supported rate at the current resolution. Its timing and rendering are designed for comparing the original screen with the image delivered through an FPV video system.
 
-![FPS Timer running fullscreen in the dark theme, with refresh rates and frame intervals](docs/screenshots/fps-timer-dark.png)
+![FPS Stopwatch running fullscreen in the dark theme, with refresh rates and frame intervals](docs/screenshots/fps-stopwatch-dark.png)
 
 *Actual application screenshot on a 2560 × 1600 display. Available modes on this monitor are 60 and 240 Hz; other monitors will show their own supported rates.*
 
@@ -26,7 +26,7 @@ The useful limit is the monitor's refresh rate, not how many frames the GPU can 
 
 ## Run
 
-Run **`dist/fps-timer.exe`** after building. No installer, administrator rights, Visual C++ Redistributable, or adjacent DLLs are required. The app uses Windows' built-in DirectX and text-rendering components.
+Run **`dist/fps-stopwatch.exe`** after building. No installer, administrator rights, Visual C++ Redistributable, or adjacent DLLs are required. The app uses Windows' built-in DirectX and text-rendering components.
 
 ## Screen and controls
 
@@ -49,7 +49,7 @@ The theme starts dark on each launch. There is no installer, settings file, or w
 
 1. Run the stopwatch on the computer screen and point the FPV camera at it.
 2. Select the desired refresh rate, or press **M** for the maximum available at the current resolution.
-3. Start the timer using **Space** or a click outside the controls.
+3. Start the stopwatch using **Space** or a click outside the controls.
 4. Photograph the computer screen and receiver screen together, with both readings visible.
 5. Subtract the receiver's reading from the computer's reading. Take several photographs to observe variation in latency.
 
@@ -73,7 +73,7 @@ From PowerShell in this directory:
 .\build.ps1
 ```
 
-This discovers the installed Microsoft tools, configures CMake, builds Release x64, runs the clock tests, and copies the standalone executable to `dist/fps-timer.exe`. MSVC's runtime is linked statically (`/MT`). Only the executable is needed on the destination computer. `build/`, `dist/`, and local compiler downloads in `.tools/` are ignored by Git.
+This discovers the installed Microsoft tools, configures CMake, builds Release x64, runs the clock tests, and copies the standalone executable to `dist/fps-stopwatch.exe`. MSVC's runtime is linked statically (`/MT`). Only the executable is needed on the destination computer. `build/`, `dist/`, and local compiler downloads in `.tools/` are ignored by Git.
 
 Alternatively, use CMake directly with an installed Visual Studio generator:
 

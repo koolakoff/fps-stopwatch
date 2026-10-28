@@ -1,4 +1,4 @@
-# FPS Timer — requirements
+# FPS Stopwatch — requirements
 
 Status: requirements for v1.0, consolidated from the discussion on 2026-10-28. The first implementation has been built; verification results and limits are recorded in [VALIDATION.md](VALIDATION.md).
 
@@ -48,7 +48,7 @@ A fullscreen Windows stopwatch for measuring FPV video-system latency. The FPV c
 
 - Target a stable fresh reading on every screen refresh with a minimal presentation queue.
 - Synchronize presentation with the screen and avoid tearing. Unlimited off-screen rendering FPS is not the goal.
-- Do not drive rendering with an ordinary fixed-interval GUI timer.
+- Do not drive rendering with an ordinary fixed-interval GUI callback.
 - In the lower-right corner, show `1000 / refresh_rate_hz` in milliseconds to two decimal places, for example `6.94 ms` at 144 Hz.
 - Label this value `frame interval`. It is the nominal interval of the selected mode, not measured FPS or a guaranteed FPV-system error bound.
 - Millisecond formatting does not imply 1 ms physical accuracy. Display scanout/response, camera exposure/readout, and variable pipeline latency affect the result.
@@ -61,7 +61,7 @@ A fullscreen Windows stopwatch for measuring FPV video-system latency. The FPV c
 - Keep the stopwatch's right edge approximately 8% of screen width from the screen edge. Keep top-right buttons and the lower-right interval at least 3% from the right edge.
 - Refresh-rate panel width: 285 design units at a 1920×1080 reference resolution.
 - Reset is a bold circular-arrow icon at the bottom left below the frequency panel. Its button occupies half the panel width. Use a filled, wide triangular arrowhead that remains distinct from the thick arc.
-- Adapt the timer size while preserving the relative digit sizes.
+- Adapt the stopwatch size while preserving the relative digit sizes.
 
 | Action | Keyboard | Mouse |
 |---|---|---|
@@ -97,7 +97,7 @@ The mockups illustrate 144 Hz and `02:17:483`. Their sample modes do not imply s
 - Revised light mockup: [mockups/light-v2.png](mockups/light-v2.png).
 - Original mockups: [mockups/dark.png](mockups/dark.png) and [mockups/light.png](mockups/light.png).
 - Generation notes: [mockups/PROMPTS.md](mockups/PROMPTS.md).
-- Application screenshot: [screenshots/fps-timer-dark.png](screenshots/fps-timer-dark.png).
+- Application screenshot: [screenshots/fps-stopwatch-dark.png](screenshots/fps-stopwatch-dark.png).
 
 ## Acceptance criteria
 

@@ -9,8 +9,8 @@ BEGIN
  BEGIN
   BLOCK "040904B0"
   BEGIN
-   VALUE "FileDescription", "FPS Timer - FPV latency stopwatch\0"
-   VALUE "ProductName", "FPS Timer\0"
+   VALUE "FileDescription", "FPS Stopwatch - FPV latency stopwatch\0"
+   VALUE "ProductName", "FPS Stopwatch\0"
    VALUE "FileVersion", "1.0.0\0"
    VALUE "ProductVersion", "1.0.0\0"
   END

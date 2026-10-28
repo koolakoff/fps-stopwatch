@@ -1,4 +1,4 @@
-# Building FPS Timer on Windows
+# Building FPS Stopwatch on Windows
 
 This guide builds the portable Windows x64 application from source using Microsoft C++ Build Tools. The full Visual Studio IDE is optional.
 
@@ -21,15 +21,15 @@ The project requires C++17 and CMake 3.20 or newer. Use a CMake version that sup
 In PowerShell, navigate to the directory where you keep projects and run:
 
 ```powershell
-git clone https://github.com/koolakoff/fps-timer.git
-cd fps-timer
+git clone https://github.com/koolakoff/fps-stopwatch.git
+cd fps-stopwatch
 ```
 
 If you already have the project, open PowerShell in its root directory, alongside `build.ps1` and `CMakeLists.txt`.
 
 ## 3. Build the portable executable
 
-Close any running copy of FPS Timer so its executable can be replaced, then run:
+Close any running copy of FPS Stopwatch so its executable can be replaced, then run:
 
 ```powershell
 .\build.ps1
@@ -41,12 +41,12 @@ The script automatically:
 2. Configures an x64 build in `build/`, with tests enabled.
 3. Compiles the application and tests in Release mode.
 4. Runs the stopwatch tests using CTest.
-5. Copies the executable to `dist/fps-timer.exe`.
+5. Copies the executable to `dist/fps-stopwatch.exe`.
 
 Launch the result:
 
 ```powershell
-.\dist\fps-timer.exe
+.\dist\fps-stopwatch.exe
 ```
 
 The script does not require a Developer Command Prompt or the full Visual Studio IDE.
@@ -86,7 +86,7 @@ cmake --build build --config Release --parallel
 ctest --test-dir build -C Release --output-on-failure
 ```
 
-With the Visual Studio generator, the application is written to `build/Release/fps-timer.exe`. Direct CMake commands do not copy it into `dist/`; run `build.ps1` or copy it yourself.
+With the Visual Studio generator, the application is written to `build/Release/fps-stopwatch.exe`. Direct CMake commands do not copy it into `dist/`; run `build.ps1` or copy it yourself.
 
 For a separate Debug build:
 
@@ -104,7 +104,7 @@ The Release executable statically links the MSVC runtime (`/MT`) and uses graphi
 
 For a distribution package, include:
 
-- `dist/fps-timer.exe`.
+- `dist/fps-stopwatch.exe`.
 - The repository's `LICENSE` file, preserving the MIT license and copyright notice.
 
 End users do not need the compiler, SDK, source files, or `build/` directory. `dist/`, `build/`, and `.tools/` are ignored by Git, so cloning the repository does not provide a prebuilt executable.
@@ -118,7 +118,7 @@ End users do not need the compiler, SDK, source files, or `build/` directory. `d
 | CMake is not found | Add C++ CMake tools for Windows through Visual Studio Installer, or make a compatible CMake installation available in `PATH`. |
 | Windows SDK or resource compiler is missing | Install a Windows SDK through Visual Studio Installer. |
 | CMake reports an old or incompatible generator | Configure into a new build directory. A CMake build directory retains its original generator and toolchain. |
-| The EXE cannot be linked or copied | Close the running FPS Timer process and retry. |
+| The EXE cannot be linked or copied | Close the running FPS Stopwatch process and retry. |
 | Graphics smoke test fails | Ensure the normal app is closed and an interactive desktop session is available. Read `build/smoke-test.txt` if it was generated. |
 
 See [VALIDATION.md](VALIDATION.md) for tested hardware and current verification limits.

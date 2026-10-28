@@ -6,9 +6,9 @@ These are historical design references, not screenshots of the current applicati
 
 ## Version 2 refinements
 
-Edit the first mockup using an English interface (`REFRESH RATE`, `frame interval`, and English keyboard hints). Reduce frequency-list font size and row spacing by about 20%. Use the exact entries `144 Hz (d)` and `240 Hz (m)`. Set the timer's right margin to 5% of screen width and the buttons' and interval's right margin to 3%.
+Edit the first mockup using an English interface (`REFRESH RATE`, `frame interval`, and English keyboard hints). Reduce frequency-list font size and row spacing by about 20%. Use the exact entries `144 Hz (d)` and `240 Hz (m)`. Set the stopwatch's right margin to 5% of screen width and the buttons' and interval's right margin to 3%.
 
-Preserve the dark palette. The light version uses the same geometry with background `#F2F0E8`, text `#101418`, and accent `#00695C`. A follow-up edit emphasized that the markers must be visible and reduced the timer by 7%, anchored at the left edge, to increase the right margin.
+Preserve the dark palette. The light version uses the same geometry with background `#F2F0E8`, text `#101418`, and accent `#00695C`. A follow-up edit emphasized that the markers must be visible and reduced the stopwatch by 7%, anchored at the left edge, to increase the right margin.
 
 The implemented app later increased the right margin to 8%, narrowed the frequency panel, added per-row intervals, a bottom-left reset icon, and a version label.
 

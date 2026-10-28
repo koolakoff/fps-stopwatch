@@ -16,13 +16,13 @@ try {
     & $ctest --test-dir build -C Release --output-on-failure
     if ($LASTEXITCODE) { throw 'Tests failed.' }
     New-Item -ItemType Directory -Force dist | Out-Null
-    Copy-Item -LiteralPath build/Release/fps-timer.exe -Destination dist/fps-timer.exe
+    Copy-Item -LiteralPath build/Release/fps-stopwatch.exe -Destination dist/fps-stopwatch.exe
     if ($SmokeTest) {
         $testArgs = @('--smoke-test')
         if ($TestRefresh) { $testArgs += '--test-refresh' }
-        $process = Start-Process -FilePath (Join-Path $PSScriptRoot 'dist/fps-timer.exe') -ArgumentList $testArgs -WindowStyle Hidden -PassThru -Wait
+        $process = Start-Process -FilePath (Join-Path $PSScriptRoot 'dist/fps-stopwatch.exe') -ArgumentList $testArgs -WindowStyle Hidden -PassThru -Wait
         if ($process.ExitCode -ne 0) { throw 'Graphics smoke test failed. See build/smoke-test.txt.' }
         Get-Content build/smoke-test.txt
     }
-    Write-Host 'Built dist/fps-timer.exe (portable, Windows x64)'
+    Write-Host 'Built dist/fps-stopwatch.exe (portable, Windows x64)'
 } finally { Pop-Location }

@@ -1,4 +1,4 @@
-# FPS Timer — validation record
+# FPS Stopwatch — validation record
 
 Date: 2026-10-28. These checks were performed during development from the initial 0.1.0 implementation through v1.0. They are a record of completed checks, not certification on every supported Windows configuration.
 
