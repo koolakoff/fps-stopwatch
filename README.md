@@ -2,6 +2,10 @@
 
 Licensed under the [MIT License](LICENSE).
 
+**Windows only — Windows 10/11 x64. Linux and macOS are not supported.**
+
+Developed with the assistance of **OpenAI ChatGPT Codex**.
+
 **A display-synchronized stopwatch for careful FPV video-latency measurements.**
 
 FPS Timer makes the most of your monitor's available refresh rates: it displays large, stable millisecond readings and lets you switch to the highest supported rate at the current resolution. Its timing and rendering are designed for comparing the original screen with the image delivered through an FPV video system.
@@ -59,6 +63,8 @@ Time comes from `QueryPerformanceCounter`, independently of rendered frame count
 
 ## Build
 
+For setup, build commands, testing, packaging, and troubleshooting, see the [Windows build guide](docs/BUILD.md).
+
 Install [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with **Desktop development with C++**, including MSVC x64/x86, Windows SDK, and C++ CMake tools.
 
 From PowerShell in this directory:
@@ -88,4 +94,4 @@ The smoke test briefly opens the fullscreen app, exercises start/pause/resume, i
 
 Clock tests cover pause/resume, reset, millisecond truncation, long gaps without rendered frames, and minute rollover. The graphics smoke test also checks mouse and keyboard controls, including reset while running and paused. Switching between 240 and 60 Hz and restoring the initial mode have been verified on the development machine. Other hardware and physical FPV measurement accuracy require separate validation.
 
-Hardware validation and limitations are recorded in [docs/VALIDATION.md](docs/VALIDATION.md). The Russian requirements document is [docs/SPECIFICATION.md](docs/SPECIFICATION.md).
+Hardware validation and limitations are recorded in [docs/VALIDATION.md](docs/VALIDATION.md). Requirements are documented in [docs/SPECIFICATION.md](docs/SPECIFICATION.md).

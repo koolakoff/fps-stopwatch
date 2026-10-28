@@ -1,111 +1,112 @@
-# FPS Timer — требования
+# FPS Timer — requirements
 
-Статус: требования к версии 0.1.0 по обсуждению от 28.10.2026. Первая реализация собрана; результаты и границы проверки приведены в `VALIDATION.md`.
+Status: requirements for v1.0, consolidated from the discussion on 2026-10-28. The first implementation has been built; verification results and limits are recorded in [VALIDATION.md](VALIDATION.md).
 
-## Назначение
+## Purpose
 
-Полноэкранный секундомер для Windows, предназначенный для измерения задержки видеосистем FPV. Камера FPV снимает экран компьютера. Пользователь фотографирует одновременно исходный экран и экран приёмника, затем вычитает показания. Результат относится ко всему наблюдаемому тракту камеры, передачи и экрана приёмника.
+A fullscreen Windows stopwatch for measuring FPV video-system latency. The FPV camera films the computer screen. The user photographs the original screen and the receiver screen together, then subtracts the displayed readings. The result covers the observed camera, transmission, and receiver-display path.
 
-## Платформа и технология
+## Platform and technology
 
-- Windows 10/11, настольное приложение.
-- Portable-приложение x64: один `.exe`, без установки и прав администратора. Среда выполнения C++ статически включена в исполняемый файл; используются системные компоненты Windows. Инструменты разработки нужны только для сборки.
-- Предлагаемый стек: C++, Win32, Direct3D 11, DXGI flip model, Direct2D/DirectWrite.
-- Полноэкранное окно без рамок; отдельный оконный режим не нужен.
-- На старте использовать текущее разрешение и частоту основного монитора. Выбор основного монитора — предварительное решение.
-- Не менять частоту автоматически при запуске.
+- **Windows only:** Windows 10/11 x64. Linux and macOS are outside the supported scope.
+- Portable application: one executable, no installation or administrator rights. The C++ runtime is linked statically; graphics and text rendering use built-in Windows components. Development tools are required only for building.
+- Stack: C++, Win32, Direct3D 11, DXGI flip model, Direct2D/DirectWrite.
+- Borderless fullscreen window; no separate windowed mode.
+- Open on the primary monitor using its current resolution and refresh rate.
+- Do not change the refresh rate automatically at startup.
 
-## Секундомер
+## Stopwatch
 
-- Формат `mm:ss:uuu`, где `uuu` — миллисекунды с ведущими нулями, например `02:17:483`.
-- Начальное значение `00:00:000`, отсчёт остановлен.
-- Крупный жирный шрифт с табличными цифрами; миллисекунды приблизительно в 1,5 раза крупнее минут и секунд. Соотношение уточняется после просмотра макетов.
-- Цифры на общей базовой линии; разряды не смещаются при изменении значения.
-- Секундомер занимает максимально возможную площадь без перекрытия органов управления.
-- Пробел запускает отсчёт или ставит на паузу. После паузы отсчёт продолжается.
-- Источник времени — монотонный высокоточный счётчик Windows QueryPerformanceCounter. Значение вычисляется из прошедшего времени, а не из количества кадров.
-- На каждый подготавливаемый кадр получать актуальное значение времени; пропуск кадра не должен замедлять отсчёт.
-- Поведение после 99 минут требует решения; предварительно минуты расширяются без сброса времени, размер текста адаптируется.
-- Reset button and R key reset the timer to zero while preserving its running / paused state. Ignore key auto-repeat.
+- Format: `mm:ss:uuu`, where `uuu` is milliseconds with leading zeros, for example `02:17:483`.
+- Start at `00:00:000`, paused.
+- Large, heavy digits with fixed-width cells. Milliseconds are approximately 1.5 times the size of minutes and seconds.
+- Use a shared baseline; digit positions must remain stable as readings change.
+- Give the stopwatch as much space as possible without overlapping controls.
+- Space starts, pauses, or resumes timing. A left-click outside active controls does the same.
+- Use the high-resolution monotonic Windows `QueryPerformanceCounter` clock. Compute readings from elapsed time, not rendered frame count.
+- Sample current time when preparing every frame. Dropped frames must not slow the stopwatch.
+- After 99 minutes, expand the minute field and adapt the text size without resetting time.
+- R and the reset button set time to zero while preserving the running or paused state. Ignore key auto-repeat for reset.
 
-## Частота экрана
+## Display refresh rate
 
-- Слева вертикально отображать поддерживаемые частоты для текущего разрешения выбранного монитора.
-- Для каждой частоты в списке показывать интервал кадра `1000 / частота_Гц` с двумя десятичными знаками, вычисленный из точного значения частоты режима. Формат строки: `144 Hz · 6.94 ms (d)`; для максимальной — например `240 Hz · 4.17 ms (m)`. Пометки располагаются после интервала. Интервал можно выделить меньшим шрифтом, сохраняя читаемость и компактность списка.
-- Активная частота обозначается рамкой. Исходная частота, сохранённая при запуске, дополнительно выделяется цветом и пометкой `(d)`. Максимальная частота имеет пометку `(m)`. Если исходная одновременно максимальная, показать обе пометки `(d) (m)`.
-- Список частот компактный: шрифт и расстояния между строками примерно на 20% меньше первого макета; область нажатия остаётся удобной для мыши.
-- По умолчанию активна исходная частота.
-- Стрелки вверх/вниз выбирают и применяют соседнюю частоту без циклического перехода на краях.
-- Щелчок мышью по частоте применяет её.
-- M применяет максимальную частоту списка; D восстанавливает исходную.
-- Частота представляется с учётом дробных значений, например 59,94 Гц; разные режимы не объединяются только по округлённому числу.
-- Смена частоты не сбрасывает и не приостанавливает секундомер.
-- После успешного переключения интерфейс отражает фактически применённый режим. При неудаче сохраняется предыдущий режим и выводится краткая ошибка.
-- При штатном выходе восстановить исходный режим. Обработать доступные пути завершения и потери устройства; гарантировать восстановление после принудительного завершения процесса или сбоя ОС невозможно.
+- Show supported refresh rates for the monitor's current resolution in a vertical list on the left.
+- Each row shows the nominal frame interval `1000 / refresh_rate_hz` to two decimal places, calculated from the exact mode frequency. Example: `144 Hz · 6.94 ms (d)`; maximum-rate example: `240 Hz · 4.17 ms (m)`. Markers follow the interval. Secondary text may be smaller while remaining legible.
+- Outline the active rate. Highlight the initial Windows rate and mark it `(d)`. Mark the highest rate `(m)`. If both are the same, show `(d) (m)`.
+- Select the initial rate by default.
+- Keep the list compact: typography and row spacing are approximately 20% smaller than the first mockup, with usable mouse targets.
+- Up/Down select and apply the adjacent rate without wrapping at the ends.
+- Clicking a rate applies it; the mouse wheel scrolls a long list.
+- M applies the maximum listed rate; D restores the initial rate.
+- Preserve fractional modes such as 59.94 Hz; do not merge distinct modes solely because their displayed integers match.
+- Changing rate must not reset or pause the stopwatch.
+- Reflect the actually applied mode. If switching fails, retain or restore the previous mode and show a short English error.
+- Restore the original display configuration on normal exit and handled failures. Restoration after forced termination or an OS crash cannot be guaranteed.
+- Disable rate switching for duplicated displays.
 
-## Вывод кадров и точность
+## Frame presentation and measurement limits
 
-- Цель — стабильное обновление секундомера на каждом обновлении экрана с минимальной очередью вывода.
-- Использовать синхронизацию с экраном; избегать разрывов изображения. Неограниченный FPS не является целью.
-- Не выполнять отрисовку по обычному GUI-таймеру с фиксированным интервалом.
-- Внизу справа показывать `1000 / частота_Гц` в миллисекундах с двумя десятичными знаками, например `6.94 ms` при 144 Гц.
-- Подпись: `frame interval`. Это расчётный интервал обновления выбранного режима, а не измеренный FPS и не гарантированная погрешность всей FPV-системы.
-- Миллисекундный формат не означает физическую точность 1 мс. Учитываются развёртка, отклик экранов, экспозиция и считывание камер, а также переменная задержка тракта.
+- Target a stable fresh reading on every screen refresh with a minimal presentation queue.
+- Synchronize presentation with the screen and avoid tearing. Unlimited off-screen rendering FPS is not the goal.
+- Do not drive rendering with an ordinary fixed-interval GUI timer.
+- In the lower-right corner, show `1000 / refresh_rate_hz` in milliseconds to two decimal places, for example `6.94 ms` at 144 Hz.
+- Label this value `frame interval`. It is the nominal interval of the selected mode, not measured FPS or a guaranteed FPV-system error bound.
+- Millisecond formatting does not imply 1 ms physical accuracy. Display scanout/response, camera exposure/readout, and variable pipeline latency affect the result.
 
-## Управление и внешний вид
+## Controls and appearance
 
-- Язык всего интерфейса — английский, включая подсказки и ошибки. Документ требований остаётся на русском.
-- Заголовок списка: `REFRESH RATE`; единицы: `Hz`, `ms`.
-- Подсказки: `Space — start / pause`, `↑↓ — refresh rate`, `M — max`, `D — default`, `I — theme`.
-- Правый край секундомера отстоит от края экрана приблизительно на 8% ширины. Для кнопок справа сверху и интервала справа снизу — не менее 3% ширины. При необходимости уменьшать весь секундомер с сохранением соотношения размеров разрядов.
+- All interface text, hints, errors, and project documentation are in English.
+- List heading: `REFRESH RATE`. Units: `Hz` and `ms`.
+- Show `v1.0` at the left of the bottom keyboard-hint line.
+- Keep the stopwatch's right edge approximately 8% of screen width from the screen edge. Keep top-right buttons and the lower-right interval at least 3% from the right edge.
+- Refresh-rate panel width: 285 design units at a 1920×1080 reference resolution.
+- Reset is a bold circular-arrow icon at the bottom left below the frequency panel. Its button occupies half the panel width. Use a filled, wide triangular arrowhead that remains distinct from the thick arc.
+- Adapt the timer size while preserving the relative digit sizes.
 
-| Действие | Клавиатура | Мышь |
+| Action | Keyboard | Mouse |
 |---|---|---|
-| Запуск / пауза | Пробел | Отдельная кнопка пока не предусмотрена |
-| Выход | Esc или Q | Крестик вверху справа |
-| Смена темы | I | Кнопка ◐ рядом с крестиком |
-| Выбор частоты | ↑ / ↓ | Щелчок по частоте |
-| Максимальная частота | M | Выбор максимальной частоты списка |
-| Исходная частота | D | Выбор исходной частоты списка |
+| Start / pause / resume | Space | Left-click outside exit, theme, reset, and refresh-rate controls |
+| Reset to zero | R | Circular-arrow button below the refresh-rate panel |
+| Exit | Esc, Q, or Alt+F4 | Close button at the top right |
+| Toggle theme | I | Half-circle button beside close |
+| Select refresh rate | Up / Down | Click a rate; scroll a long list with the wheel |
+| Maximum refresh rate | M | Select the maximum-rate row |
+| Initial refresh rate | D | Select the initial-rate row |
 
-- Игнорировать автоповтор клавиш для переключения запуска/паузы и темы.
-- Две темы, без анимации перехода; начальная тема тёмная.
-- Масштабировать интерфейс под разрешение и DPI; не допускать обрезанных цифр и перекрытия списка, таймера и кнопок.
-- Кнопки выхода и темы имеют достаточную область нажатия и визуальную реакцию на наведение.
-- Подсказки клавиш небольшие и второстепенные.
-- Сохранение темы между запусками — предварительное решение, не обязательное для первой версии.
+- Clicking an active control must not also toggle the stopwatch.
+- Ignore key auto-repeat for start/pause, reset, and theme changes.
+- Two themes with immediate transitions; start in the dark theme on each launch.
+- Scale to screen resolution and DPI without clipping digits or overlapping controls.
+- Buttons have usable hit areas and hover feedback.
+- Keyboard hints are small and secondary.
+- Theme persistence is not included in v1.0.
 
-| Элемент | Тёмная тема | Светлая тема |
+| Element | Dark theme | Light theme |
 |---|---|---|
-| Фон | `#101418` | `#F2F0E8` |
-| Основные цифры и рамка | `#F2F0E8` | `#101418` |
-| Исходная частота | `#80CBC4` | `#00695C` |
+| Background | `#101418` | `#F2F0E8` |
+| Main digits and selection frame | `#F2F0E8` | `#101418` |
+| Initial-rate highlight | `#80CBC4` | `#00695C` |
 
-Строгая пара `#000000` / `#FFFFFF` обсуждалась как возможное расширение; в первую версию не включена.
+A strict `#000000` / `#FFFFFF` pair was discussed as a possible extension and is not included in v1.0.
 
-## Макеты
+## Design references
 
-Макеты иллюстрируют экран при 144 Гц и времени `02:17:483`; частоты в списке демонстрационные. Они не подтверждают наличие этих режимов у конкретного монитора.
+The mockups illustrate 144 Hz and `02:17:483`. Their sample modes do not imply support on any particular monitor. They are historical design references; the implemented layout includes the later changes specified above.
 
-- Актуальная тёмная тема: `mockups/dark-v2.png`.
-- Актуальная светлая тема: `mockups/light-v2.png`.
-- Первые версии сохранены как `mockups/dark.png` и `mockups/light.png`.
-- Промпты генерации: `mockups/PROMPTS.md`.
+- Revised dark mockup: [mockups/dark-v2.png](mockups/dark-v2.png).
+- Revised light mockup: [mockups/light-v2.png](mockups/light-v2.png).
+- Original mockups: [mockups/dark.png](mockups/dark.png) and [mockups/light.png](mockups/light.png).
+- Generation notes: [mockups/PROMPTS.md](mockups/PROMPTS.md).
+- Application screenshot: [screenshots/fps-timer-dark.png](screenshots/fps-timer-dark.png).
 
-## Критерии приёмки
+## Acceptance criteria
 
-1. Приложение открывается полноэкранно с исходным режимом дисплея и нулевым остановленным секундомером.
-2. Пробел корректно запускает, останавливает и продолжает отсчёт; значение не зависит от числа отрисованных кадров.
-3. Формат и иерархия размеров соответствуют макету; тысячные крупнее остальных разрядов.
-4. Реальные частоты доступны с клавиатуры и мыши; исходная выделена, активная обведена. Каждая строка содержит соответствующий интервал в ms с двумя десятичными знаками и применимые пометки `(d)` / `(m)`.
-5. M и D работают, интервал кадра обновляется после переключения.
-6. I и кнопка темы меняют палитру; Esc, Q и крестик завершают приложение с восстановлением режима.
-7. Под нагрузкой пропущенные кадры не вызывают дрейф секундомера. Проверка вывода проводится отдельно от проверки точности часов.
-8. На доступном оборудовании проверены стабильность показа, переключение частот, DPI, потеря фокуса и восстановление режима при штатном выходе.
-
-## UI update
-
-- Left-click outside the exit button, theme button, Reset button and refresh-rate rows toggles start / pause / resume, just like Space. Clicking those controls does not toggle the stopwatch. This replaces the earlier mouse-control entry.
-- Refresh-rate list width: 285 design units at 1920x1080; right margin of stopwatch: 8% of screen width.
-
-- Reset control: circular-arrow icon at the bottom left, below the refresh-rate panel, with button width equal to half the panel width. No Reset text at the top right. R behavior remains unchanged.
+1. Open fullscreen in the initial display mode with a zeroed, paused stopwatch.
+2. Space and background clicks correctly start, pause, and resume timing independently of frame count.
+3. Preserve the required format, baseline, stable digit cells, larger milliseconds, and screen margins.
+4. Make actual refresh modes selectable by keyboard and mouse, with an active frame, initial highlight, per-row intervals, and appropriate `(d)` / `(m)` markers.
+5. M and D apply their respective modes and update the interval readout.
+6. I and the theme button change palette. Esc, Q, Alt+F4, and close exit with an attempt to restore the initial configuration.
+7. R and reset zero the reading without changing the running/paused state.
+8. Dropped frames do not produce stopwatch drift. Clock accuracy and display presentation are verified separately.
+9. Verify display switching, layout/DPI, focus behavior, and normal-exit restoration on available hardware, recording untested cases in the validation report.
