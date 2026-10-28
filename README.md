@@ -1,5 +1,7 @@
 # FPS Stopwatch
 
+<img src="src/assets/icon-source.png" width="96" alt="FPS Stopwatch application icon">
+
 Licensed under the [MIT License](LICENSE).
 
 **Windows only — Windows 10/11 x64. Linux and macOS are not supported.**

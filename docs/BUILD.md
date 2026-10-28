@@ -100,6 +100,15 @@ Keep this optional `build-debug/` directory out of commits; the default `.gitign
 
 ## 6. Distribute the result
 
+The supplied amber stopwatch artwork is stored in `src/assets/icon-source.png`. Its multi-size Windows icon is checked in as `src/assets/app.ico` and embedded in both the executable and the window class. Normal builds do not need to regenerate it. To regenerate after changing the artwork, run from the repository root:
+
+```powershell
+.\tools\Generate-Icon.ps1
+.\build.ps1
+```
+
+The icon contains 16, 20, 24, 32, 40, 48, 64, 128, and 256 pixel representations with transparency.
+
 The Release executable statically links the MSVC runtime (`/MT`) and uses graphics components included with Windows 10/11. It does not require an installer, administrator rights, the Visual C++ Redistributable, or adjacent application DLLs.
 
 For a distribution package, include:

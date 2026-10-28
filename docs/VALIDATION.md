@@ -12,6 +12,8 @@ Date: 2026-10-28. These checks were performed during development from the initia
 
 ## Completed checks
 
+- Embedded the user-supplied amber stopwatch artwork as a transparent multi-size ICO (16 through 256 pixels). Verified shell extraction of the executable icon, inspected small and large representations, and passed graphics smoke tests with both window-class icon handles loaded.
+
 - Build completed without compiler warnings.
 - CTest clock tests passed: initial zero state, millisecond truncation, long gaps without frames, pause/resume, second/minute rollover, and expansion beyond 99 minutes.
 - Fullscreen DXGI/Direct2D application ran on physical hardware.

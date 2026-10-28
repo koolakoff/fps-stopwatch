@@ -1,6 +1,7 @@
 #include "display.h"
 #include "renderer.h"
 #include "stopwatch.h"
+#include "resource.h"
 #include <windowsx.h>
 #include <array>
 #include <exception>
@@ -278,6 +279,11 @@ public:
         WNDCLASSEXW cls{}; cls.cbSize = sizeof(cls); cls.hInstance = instance;
         cls.lpfnWndProc = procedure; cls.lpszClassName = L"FpsStopwatchWindow";
         cls.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+        cls.hIcon = static_cast<HICON>(LoadImageW(instance, MAKEINTRESOURCEW(IDI_APP_ICON), IMAGE_ICON,
+            GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON), LR_SHARED));
+        cls.hIconSm = static_cast<HICON>(LoadImageW(instance, MAKEINTRESOURCEW(IDI_APP_ICON), IMAGE_ICON,
+            GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_SHARED));
+        if (!cls.hIcon || !cls.hIconSm) throw std::runtime_error("Cannot load the application icon.");
         if (!RegisterClassExW(&cls)) throw std::runtime_error("Cannot register the application window.");
         const auto rect = display.monitor.rcMonitor;
         window = CreateWindowExW(WS_EX_APPWINDOW, cls.lpszClassName, L"FPS Stopwatch", WS_POPUP,
